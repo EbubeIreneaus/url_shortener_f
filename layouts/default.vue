@@ -1,4 +1,5 @@
 <script  setup>
+provide('urlApi', 'http://127.0.0.1:8000/')
 
 onMounted(() => {
     document.getElementById('nav-btn').addEventListener('click', ()=>{

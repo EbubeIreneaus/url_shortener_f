@@ -1,5 +1,22 @@
-<script lang="ts" setup>
+<script  setup>
+const uglyLink = ref('')
 
+const url = inject('urlApi')
+
+let shortenlink = ref(null)
+
+const shortenLink = async () =>{
+    const {data, error} = await useFetch(`${url}/isllinks/`,{
+       method:'post', body: {'link': uglyLink.value}
+    })
+    if (data.value.status == 'success') {
+
+        shortenlink.value = {
+            'qr_src': data.value.src,
+            'key': data.value.key
+        }
+    }
+}
 </script>
 
 <template>
@@ -10,14 +27,14 @@
                 <p>isl.app is a free tool to shorten URLs powered by Ireneaus Short Link. Create short & memorable links in
                     seconds.</p>
                 <div class="d-flex flex-lg-row flex-column gap-2 form">
-                    <input type="url" class="form-control" name="" id="" placeholder="Enter Link Here">
-                    <button type="button" class="btn "> Shorten URL</button>
+                    <input type="url" class="form-control" v-model="uglyLink" id="" placeholder="Enter Link Here">
+                    <button type="button" class="btn " @click="shortenLink"> Shorten URL</button>
                 </div> <br>
-                <div class="d-flex flex-lg-row flex-column align-items-center justify-content-between border result bg-light py-3">
-                    <div class="px-3 mb-lg-0 mb-2 text-dark "><b>google.com</b></div>
+                <div v-if="shortenlink" class="d-flex flex-lg-row flex-column align-items-center justify-content-between border result bg-light py-3">
+                    <div class="px-3 mb-lg-0 mb-2 text-dark "><b>{{uglyLink}}</b></div>
                     <div class="px-3 text-dark d-flex gap-2 ">
-                        <a href="google.com" target="_blank" title="goolgle.com" class="px-3">isl.netlify.app/3dgrt</a>
-                        <a href=""><i class="fa-solid fa-qrcode p-1"></i></a>
+                        <a :href="uglyLink" target="_blank" title="goolgle.com" class="px-3">isl.netlify.app/{{shortenlink.key}}</a>
+                        <a :href="url + shortenlink.qr_src"><i class="fa-solid fa-qrcode p-1"></i></a>
                         <router-link to="/stats"><i class="fa-solid fa-chart-simple p-1"></i></router-link>
                         <a href="#"><i class="fa-solid fa-copy p-1"></i></a>
                     </div>
