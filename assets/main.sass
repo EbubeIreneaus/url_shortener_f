@@ -1,5 +1,7 @@
 @import 'var'
- 
+body
+    font-family: Arial, Helvetica, sans-serif
+
 a
     text-decoration: none
 
@@ -17,7 +19,9 @@ a
 
 .text-secondary
     color: $secondary !important
-
+.bg-hover-secondary
+    &:hover
+       background-color: $secondary !important
 .text-hover-primary
     &:hover
         color: $primary 

@@ -39,7 +39,7 @@ onMounted(() => {
 <style lang="sass" scoped>
     @import '~/assets/var'
    main
-  
+    min-height: 100vh
     header
         height: 70px !important
         position: sticky
