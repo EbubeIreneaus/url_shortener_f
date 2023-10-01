@@ -1,22 +1,41 @@
 <script  setup>
 const uglyLink = ref('')
 
-const url = inject('urlApi')
+const { b_end, f_end } = inject('url')
 
-let shortenlink = ref(null)
+let shortenedlink = ref(null)
 
-const shortenLink = async () =>{
-    const {data, error} = await useFetch(`${url}/isllinks/`,{
-       method:'post', body: {'link': uglyLink.value}
+const shortenLink = async () => {
+    if (uglyLink.value.startsWith('http://') == false && uglyLink.value.startsWith('https://') == false) {
+        alert("link must start with http://")
+
+        return
+    }
+    const { data, error } = await useFetch(`${b_end.value}/isllinks/`, {
+        method: 'post', body: { 'link': uglyLink.value }
     })
     if (data.value.status == 'success') {
 
-        shortenlink.value = {
+        shortenedlink.value = {
             'qr_src': data.value.src,
-            'key': data.value.key
+            'key': data.value.key,
+            'link': data.value.link
         }
     }
+
 }
+const copy_url = (e) => {
+    navigator.clipboard.writeText(`${f_end.value + shortenedlink.value.key}`)
+    let tooltip = document.querySelector('.tooltip')
+    tooltip.classList.add('tooltip-show')
+    let tooltipout = setTimeout(() => {
+        tooltip.classList.remove('tooltip-show')
+    }, 1500)
+
+}
+onUnmounted(() => {
+    clearTimeout(tooltipout)
+})
 </script>
 
 <template>
@@ -30,13 +49,27 @@ const shortenLink = async () =>{
                     <input type="url" class="form-control" v-model="uglyLink" id="" placeholder="Enter Link Here">
                     <button type="button" class="btn " @click="shortenLink"> Shorten URL</button>
                 </div> <br>
-                <div v-if="shortenlink" class="d-flex flex-lg-row flex-column align-items-center justify-content-between border result bg-light py-3">
-                    <div class="px-3 mb-lg-0 mb-2 text-dark "><b>{{uglyLink}}</b></div>
+
+                <div v-if="shortenedlink" class="d-flex flex-lg-row flex-column align-items-center 
+                justify-content-between border result bg-light py-3">
+                    <a :href="f_end + shortenedlink.key" target="_blank" :title="f_end + shortenedlink.key" class="px-3 py-2">
+                        isl.netlify.app/{{ shortenedlink.key }}
+                    </a>
                     <div class="px-3 text-dark d-flex gap-2 ">
-                        <a :href="uglyLink" target="_blank" title="goolgle.com" class="px-3">isl.netlify.app/{{shortenlink.key}}</a>
-                        <a :href="url + shortenlink.qr_src"><i class="fa-solid fa-qrcode p-1"></i></a>
-                        <router-link to="/stats"><i class="fa-solid fa-chart-simple p-1"></i></router-link>
-                        <a href="#"><i class="fa-solid fa-copy p-1"></i></a>
+
+
+                        <a :href="`${b_end + shortenedlink.qr_src}`" target="_blank">
+                            <i class="fa-solid fa-qrcode p-1"></i>
+                        </a>
+
+                        <NuxtLink :to="`stats/${shortenedlink.key}`">
+                            <i class="fa-solid fa-chart-simple p-1"></i>
+                        </NuxtLink>
+                        <div class="position-relative copy-icon">
+                            <a href="#" @click="copy_url($event)"><i class="fa-solid fa-copy p-1"></i>
+                            </a>
+                            <span class="tooltip">copied</span>
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -80,17 +113,60 @@ const shortenLink = async () =>{
                 padding: 30px
                 margin-top: 20px
                 border-radius: 50px
+                
+    .tooltip
+        visibility: hidden
+        width: 120px
+        background-color: $secondary
+        color: white 
+        text-align: center
+        padding: 5px 0
+        border-radius: 6px
 
-    @media screen and (max-width:465px)
+        /* Position the tooltip text */
+        position: absolute
+        z-index: 1
+        bottom: 125%
+        left: 50%
+        margin-left: -60px
+
+        /* Fade in tooltip */
+        opacity: 0 
+        transition: opacity 0.6s
+        
+
+        /* Tooltip arrow */
+        &:after 
+            content: ""
+            position: absolute
+            top: 100%
+            left: 50%
+            margin-left: -5px
+            border-width: 5px
+            border-style: solid
+            border-color: #555 transparent transparent transparent
+        
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+    .tooltip-show 
+        visibility: visible !important
+        opacity: 1 !important
+
+    @media screen and (max-width:768px)
         .center
             width: 100% !important
             padding: 20px
             border: 1px solid green
+            overflow: hidden
             .form
                 height: fit-content !important
                 button
                     width: 100% !important
                 input
                     width: 100% !important
+            .result
+                width: 100% !important
+                border: 1px solid red !important
+                
 
 </style>

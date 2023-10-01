@@ -1,5 +1,7 @@
 <script  setup>
-provide('urlApi', 'http://127.0.0.1:8000/')
+const b_end = ref('http://127.0.0.1:8000/')
+const f_end = ref('http://localhost:3000/')
+provide('url', {b_end, f_end})
 
 onMounted(() => {
     document.getElementById('nav-btn').addEventListener('click', ()=>{
