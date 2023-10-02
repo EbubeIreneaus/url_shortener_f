@@ -53,7 +53,7 @@ onUnmounted(() => {
                 <div v-if="shortenedlink" class="d-flex flex-lg-row flex-column align-items-center 
                 justify-content-between border result bg-light py-3">
                     <a :href="f_end + shortenedlink.key" target="_blank" :title="f_end + shortenedlink.key" class="px-3 py-2">
-                        isl.netlify.app/{{ shortenedlink.key }}
+                       {{ f_end }} {{ shortenedlink.key }}
                     </a>
                     <div class="px-3 text-dark d-flex gap-2 ">
 
@@ -73,7 +73,7 @@ onUnmounted(() => {
                     </div>
                 </div>
                 <br>
-                <p>By clicking Shorten URL, you agree to ISL Terms of Use, Privacy Policy and Cookie Policy</p>
+                <p>By clicking Shorten URL, you agree to ISL's Terms of Use, Privacy Policy and Cookie Policy</p>
 
                 <div class="container text-start mt-5">
                     <small class="">

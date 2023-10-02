@@ -1,6 +1,6 @@
 <script  setup>
-const b_end = ref('https://isl.up.railway.app/')
-const f_end = ref('http://isl.netlify.app/')
+const b_end = ref('https://isls.up.railway.app/')
+const f_end = ref('https://isls.netlify.app/')
 provide('url', {b_end, f_end})
 
 onMounted(() => {

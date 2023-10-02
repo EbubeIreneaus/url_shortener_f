@@ -1,5 +1,5 @@
 <script  setup>
-const b_end = ref('https://isl.up.railway.app/')
+const b_end = ref('https://isls.up.railway.app/')
 const { key } = useRoute().params
 
 const res = await useFetch(`${b_end.value}isllinks/`, {
