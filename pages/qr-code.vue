@@ -13,7 +13,7 @@ const generateQr = async (e) => {
     e.target.disabled = true
     const qr_data = qr_form
 
-    const { data, error } = await useFetch(`${b_end.value}/generateQr/`, {
+    const { data, error } = await useFetch(`${b_end.value}generateQr/`, {
         method: 'post', body: qr_data
     })
 

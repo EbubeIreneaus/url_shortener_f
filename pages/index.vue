@@ -11,7 +11,7 @@ const shortenLink = async () => {
 
         return
     }
-    const { data, error } = await useFetch(`${b_end.value}/isllinks/`, {
+    const { data, error } = await useFetch(`${b_end.value}isllinks/`, {
         method: 'post', body: { 'link': uglyLink.value }
     })
     if (data.value.status == 'success') {
@@ -62,9 +62,9 @@ onUnmounted(() => {
                             <i class="fa-solid fa-qrcode p-1"></i>
                         </a>
 
-                        <NuxtLink :to="`stats/${shortenedlink.key}`">
+                        <!-- <NuxtLink :to="`stats/${shortenedlink.key}`">
                             <i class="fa-solid fa-chart-simple p-1"></i>
-                        </NuxtLink>
+                        </NuxtLink> -->
                         <div class="position-relative copy-icon">
                             <a href="#" @click="copy_url($event)"><i class="fa-solid fa-copy p-1"></i>
                             </a>
