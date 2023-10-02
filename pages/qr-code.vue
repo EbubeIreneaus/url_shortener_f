@@ -129,7 +129,7 @@ const generateQr = async (e) => {
                         <button class=" btn text-primary p-3 mx-3" @click="qr = null"><i class="fa fa-close"></i></button>
                     </div>
                     <div class="modal-body p-5">
-                        <img :src="b_end+qr" width="200px"
+                        <img :src="b_end+qr" width="200"
                         class="img-fluid mx-auto d-block mb-4" alt="Image">
                         <div class="text-center mt-4">
                             <a :href="b_end+qr" download class="btn bg-secondary text-primary me-2">Download</a>
