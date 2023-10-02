@@ -1,6 +1,6 @@
 <script  setup>
-const b_end = ref('http://127.0.0.1:8000/')
-const f_end = ref('http://localhost:3000/')
+const b_end = ref('https://isl.up.railway.app/')
+const f_end = ref('http://isl.netlify.app/')
 provide('url', {b_end, f_end})
 
 onMounted(() => {
@@ -21,14 +21,13 @@ onMounted(() => {
                 </div>
 
                 <ul class="d-md-flex d-none align-items-center justify-content-center  w-100">
-                    <router-link to="/"><li>Home</li></router-link>
-                    <router-link to="/qr-code"><li>Qr Code Generator</li></router-link>
-                    <router-link to="/stats"><li>Stats</li></router-link>
+                    <NuxtLink to="/"><li>Home</li></NuxtLink>
+                    <NuxtLink to="/qr-code"><li>Qr Code Generator</li></NuxtLink>
                 </ul> 
                  <ul class=" d-flex flex-column justify-content-center gap-1 w-100 nav-mobile bg">
-                    <router-link to="/"><li>Home</li></router-link>
-                    <router-link to="/qr-code"><li>Qr Code Generator</li></router-link>
-                    <router-link to="/stats"><li>Stats</li></router-link>
+                    <NuxtLink to="/"><li>Home</li></NuxtLink>
+                    <NuxtLink to="/qr-code"><li>Qr Code Generator</li></NuxtLink>
+                    
                 </ul>
             </nav>
         </header>

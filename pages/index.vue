@@ -1,6 +1,6 @@
 <script  setup>
 const uglyLink = ref('')
-
+let tooltipout
 const { b_end, f_end } = inject('url')
 
 let shortenedlink = ref(null)
@@ -28,7 +28,7 @@ const copy_url = (e) => {
     navigator.clipboard.writeText(`${f_end.value + shortenedlink.value.key}`)
     let tooltip = document.querySelector('.tooltip')
     tooltip.classList.add('tooltip-show')
-    let tooltipout = setTimeout(() => {
+    tooltipout = setTimeout(() => {
         tooltip.classList.remove('tooltip-show')
     }, 1500)
 
@@ -73,7 +73,7 @@ onUnmounted(() => {
                     </div>
                 </div>
                 <br>
-                <p>By clicking Shorten URL, you agree to Rebrandly's Terms of Use, Privacy Policy and Cookie Policy</p>
+                <p>By clicking Shorten URL, you agree to ISL Terms of Use, Privacy Policy and Cookie Policy</p>
 
                 <div class="container text-start mt-5">
                     <small class="">

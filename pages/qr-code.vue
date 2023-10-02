@@ -2,12 +2,13 @@
 const tab = ref('url')
 const { b_end, f_end } = inject('url')
 const qr_form = reactive({
-    'txt_data':'',
+    'txt_data': '',
     'fg_color': '#000000',
     'bg_color': '#ffffff',
-    'border_size': 0
+    'border_size': 1
 })
-const generateQr = async(e) =>{
+const qr = ref(null)
+const generateQr = async (e) => {
     e.target.innerHTML = '<i class="spinner-grow text-muted"></i>'
     e.target.disabled = true
     const qr_data = qr_form
@@ -16,14 +17,19 @@ const generateQr = async(e) =>{
         method: 'post', body: qr_data
     })
 
-    
     if (data.value.status == 'success') {
-        console.log(data.value);
-       
+        e.target.innerHTML = 'generate'
+        e.target.disabled = false
+        qr.value = data.value.src
+
+    } else {
+        alert('failed to generate QRCode')
+        e.target.innerHTML = 'generate'
+        e.target.disabled = false
     }
 
 
-    
+
 }
 </script>
 
@@ -37,13 +43,13 @@ const generateQr = async(e) =>{
         <div class="d-flex gap-2 flex-lg-row flex-column">
             <div class="f_comp w-100">
 
-                <button class="btn tab " @click="tab = 'url', qr_form.qr_form.txt_data = ''"
+                <button class="btn tab " @click="tab = 'url', qr_form.txt_data = ''"
                     :class="{ 'tab-active, disabled': tab == 'url' }">
                     <i class="fa fa-link"></i> url
                 </button>
 
                 <button class="btn tab" @click="tab = 'text', qr_form.txt_data = ''"
-                    :class="{ 'tab-active, disabled': tab != 'url' }">
+                    :class="{ 'tab-active, disabled': tab == 'text' }">
                     <i class="fa fa-pen"></i> text
                 </button>
 
@@ -52,8 +58,8 @@ const generateQr = async(e) =>{
                             placeholder="Enter link Here"></div>
                     <div class="" v-else>
                         <label for="txt-area " class="text-secondary mb-2"> write Text here:</label>
-                        <textarea class="form-control" v-model="qr_form.txt_data" placeholder="write Text here" id="txt-area"
-                            rows="3">
+                        <textarea class="form-control" v-model="qr_form.txt_data" placeholder="write Text here"
+                            id="txt-area" rows="3">
                         </textarea>
                     </div>
 
@@ -61,11 +67,12 @@ const generateQr = async(e) =>{
                 </div>
 
             </div>
-  
+
             <div class="sec_comp w-100 border bg-light px-lg-1 px-3">
                 <div class="content ">
-                    <div class=" qr-code" :style="{ backgroundColor: qr_form.bg_color,
-                         }">
+                    <div class=" qr-code" :style="{
+                        backgroundColor: qr_form.bg_color,
+                    }">
 
                         <i class="fas fa-qrcode" :style="{ color: qr_form.fg_color }"></i>
                     </div>
@@ -103,23 +110,46 @@ const generateQr = async(e) =>{
                             <button class="btn px-4 py-1 disabled">{{ qr_form.border_size }}</button>
                         </div>
 
-                        <input type="range" min="0" max="10" step="1" v-model="qr_form.border_size"
-                         class="form-range">
+                        <input type="range" min="0" max="10" step="1" v-model="qr_form.border_size" class="form-range">
 
                     </div>
 
                     <button class="btn px-5 py-3 my-4 bg text-primary bg-hover-secondary" @click="generateQr($event)"
-                    :class="{'disabled': qr_form.txt_data== ''}">Generate</button>
+                        :class="{ 'disabled': qr_form.txt_data == '' }">Generate</button>
 
                 </div>
             </div>
         </div>
+
+        <div class="modal d-block " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
+        aria-hidden="true"  v-if="qr">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class=" btn text-primary p-3 mx-3" @click="qr = null"><i class="fa fa-close"></i></button>
+                    </div>
+                    <div class="modal-body p-5">
+                        <img :src="b_end+qr" class="img-fluid mx-auto d-block mb-3" alt="Image">
+                        <div class="text-center mt-3">
+                            <a :href="b_end+qr" download class="btn bg-secondary text-primary me-2">Download</a>
+                            <a :href="b_end+qr" target="_blank" class="btn btn bg-secondary text-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <style lang="sass" scoped>
     @import '~/assets/var'
 
+    .modal
+        background-color: transparentize($bg, .5 )
+        .modal-content
+            background-color: $bg
+            box-shadow: 0 0 10px 0 $secondary
     .container
         width: 80%
         margin: 70px auto 0 auto
