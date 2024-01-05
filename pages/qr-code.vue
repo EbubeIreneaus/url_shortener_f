@@ -9,18 +9,18 @@ const qr_form = reactive({
 })
 const qr = ref(null)
 const generateQr = async (e) => {
-    e.target.innerHTML = '<i class="spinner-grow text-muted"></i>'
+    e.target.innerHTML = '<i class="fa fa-spinner animate-spin"></i>'
     e.target.disabled = true
     const qr_data = qr_form
 
     const { data, error } = await useFetch(`${b_end.value}generateQr/`, {
-        method: 'post', body: qr_data
+        method: 'post', body: qr_data, watch: false
     })
 
     if (data.value.status == 'success') {
         e.target.innerHTML = 'generate'
         e.target.disabled = false
-        qr.value = data.value.src
+        qr.value = data.value.qr_src
 
     } else {
         alert('failed to generate QRCode')
@@ -34,32 +34,36 @@ const generateQr = async (e) => {
 </script>
 
 <template>
-    <div class="container">
-        <div class="text-center text-secondary">
+    <div class="w-full md:w-[80%] mx-auto grid content-center min-h-[calc(100vh-70%)] p-[20px] md:p-5 overflow-hidden">
+        <div class="text-center text-black/60 py-10">
             <h2>Free QRCode Generator</h2>
             <p>isl.app is a free tool to generate qrcodes powered by Ireneaus Short Link. Create short & memorable links in
                 seconds.</p>
         </div>
-        <div class="d-flex gap-2 flex-lg-row flex-column">
-            <div class="f_comp w-100">
+        <div class="flex gap-2 lg:flex-row flex-col">
+            <div class=" w-full text-white p-3">
 
-                <button class="btn tab " @click="tab = 'url', qr_form.txt_data = ''"
-                    :class="{ 'tab-active, disabled': tab == 'url' }">
+                <button class="bg-slate-950 py-2 px-20 w-full md:w-fit border hover:bg-slate-800 tab me-7"
+                    @click="tab = 'url', qr_form.txt_data = ''"
+                    :class="{ 'disabled ring-2 ring-orange-500': tab == 'url' }">
                     <i class="fa fa-link"></i> url
                 </button>
 
-                <button class="btn tab" @click="tab = 'text', qr_form.txt_data = ''"
-                    :class="{ 'tab-active, disabled': tab == 'text' }">
+                <button class="bg-slate-950 py-2 px-20 w-full md:w-fit border hover:bg-slate-800 tab"
+                    @click="tab = 'text', qr_form.txt_data = ''"
+                    :class="{ 'disabled ring-2 ring-orange-500': tab == 'text' }">
                     <i class="fa fa-pen"></i> text
                 </button>
 
-                <div class="mb-3 mt-3 form">
-                    <div v-if="tab == 'url'"> <input type="text" v-model="qr_form.txt_data" class="form-control "
-                            placeholder="Enter link Here"></div>
+                <div class="mb-3 mt-7 w-full md:w-[80%] text-black/50">
+                    <div v-if="tab == 'url'">
+                        <input type="text" v-model="qr_form.txt_data" class="outline-none border py-3 ps-4 w-full "
+                            placeholder="Enter link Here">
+                    </div>
                     <div class="" v-else>
                         <label for="txt-area " class="text-secondary mb-2"> write Text here:</label>
-                        <textarea class="form-control" v-model="qr_form.txt_data" placeholder="write Text here"
-                            id="txt-area" rows="3">
+                        <textarea class="w-full border outline-none p-4" v-model="qr_form.txt_data"
+                            placeholder="write Text here" id="txt-area" rows="3">
                         </textarea>
                     </div>
 
@@ -69,20 +73,20 @@ const generateQr = async (e) => {
             </div>
 
             <div class="sec_comp w-100 border bg-light px-lg-1 px-3">
-                <div class="content ">
-                    <div class=" qr-code" :style="{
+                <div class=" grid content-center place-content-center place-items-center">
+                    <div class=" qr-code py-1 my-4 px-1   " :style="{
                         backgroundColor: qr_form.bg_color,
                     }">
 
-                        <i class="fas fa-qrcode" :style="{ color: qr_form.fg_color }"></i>
+                        <i class="fas fa-qrcode text-[110px]" :style="{ color: qr_form.fg_color }"></i>
                     </div>
 
-                    <div class="color-picker d-flex flex-md-row flex-column border gap-2 w-100 mb-3 px-lg-3">
+                    <div class="color-picker flex md:flex-row flex-col py-3 gap-2 w-full mb-3  lg:px-3">
 
-                        <div class="w-100">
+                        <div class="w-full">
                             <label for="">background</label>
-                            <div class="input-group color-custom">
-                                <input type="text" class="form-control" v-model="qr_form.bg_color">
+                            <div class="flex color-custom border px-1 py-1">
+                                <input type="text" class="flex-grow outline-none  px-1" v-model="qr_form.bg_color">
 
                                 <input type="color" name="" id="bgc" v-model="qr_form.bg_color" hidden>
                                 <label for="bgc" class="input-group-text">
@@ -91,10 +95,10 @@ const generateQr = async (e) => {
                             </div>
                         </div>
 
-                        <div class="w-100">
+                        <div class="w-full">
                             <label for="">foreground</label>
-                            <div class="input-group color-custom">
-                                <input type="text" class="form-control" v-model="qr_form.fg_color">
+                            <div class="flex color-custom border px-1 py-1">
+                                <input type="text" class="flex-grow outline-none  px-1" v-model="qr_form.fg_color">
 
                                 <input type="color" name="" id="fgc" v-model="qr_form.fg_color" hidden>
                                 <label for="fgc" class="input-group-text">
@@ -114,29 +118,28 @@ const generateQr = async (e) => {
 
                     </div>
 
-                    <button class="btn px-5 py-3 my-4 bg text-primary bg-hover-secondary" @click="generateQr($event)"
-                        :class="{ 'disabled': qr_form.txt_data == '' }">Generate</button>
+                    <button
+                        class="btn px-10 py-3 my-4 bg-slate-950 text-white hover:bg-slate-800 disabled:cursor-not-allowed"
+                        @click="generateQr($event)" :disabled="qr_form.txt_data == ''">Generate</button>
 
                 </div>
             </div>
         </div>
 
-        <div class="modal d-block " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
-        aria-hidden="true"  v-if="qr">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button class=" btn text-primary p-3 mx-3" @click="qr = null"><i class="fa fa-close"></i></button>
-                    </div>
-                    <div class="modal-body p-5">
-                        <img :src="b_end+qr" width="200"
-                        class="img-fluid mx-auto d-block mb-4" alt="Image">
-                        <div class="text-center mt-4">
-                            <a :href="b_end+qr" download class="btn bg-secondary text-primary me-2">Download</a>
-                            <a :href="b_end+qr" target="_blank" class="btn btn bg-secondary text-primary">View</a>
-                        </div>
+        <div class="fixed w-full h-screen top-0 flex items-center justify-center left-0 bg-black/30" v-if="qr">
+
+            <div class="bg-slate-900 max-w-md w-full">
+                <div class="modal-header">
+                    <button class=" btn text-primary p-3 mx-3" @click="qr = null"><i class="fa fa-close"></i></button>
+                </div>
+                <div class="modal-body p-5">
+                    <img :src="qr" width="200" class="img-fluid mx-auto d-block mb-4" alt="Image">
+                    <div class="text-center mt-4">
+                        <a :href="qr" download class=" me-2 text-slate-200 hover:text-slate-900">Download</a>
+                        <a :href="qr" target="_blank" class="text-slate-200 hover:text-slate-900">View</a>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -145,75 +148,5 @@ const generateQr = async (e) => {
 
 <style lang="sass" scoped>
     @import '~/assets/var'
-
-    .modal
-        background-color: transparentize($bg, .5 )
-        .modal-content
-            background-color: $bg
-            box-shadow: 0 0 10px 0 $secondary
-    .container
-        width: 80%
-        margin: 70px auto 0 auto
-        min-height: calc( 100vh - 70px )
-        .f_comp
-            button
-                color: $primary
-                padding: 5px 70px
-                margin: 15px
-                border: .5px solid transparentize(white, .7)
-            .disabled
-                background-color: transparentize($secondary, .5)
-                color: $bg
-            .form
-                width: 80%
-        .sec_comp
-            .content
-                display: grid
-                place-items: center
-                .qr-code
-                    box-sizing: border-box !important
-                    margin: 30px auto
-                    width: 100px
-                    height: 100px
-                    display: grid
-                    place-items: center
-                    
-                    i
-                        font-size: 100px
-
-                
-                .color-picker
-                    .color-custom
-                        border: 1px solid black
-                        input, label
-                            border: none
-                            outline: none !important
-                            box-shadow: none 
-                            background-color: white
-
-    @media screen and (max-width: 768px)
-        .container
-            width: 100% !important
-            .f_comp
-                button
-                    width: 45% !important
-                    
-
-           
-    @media screen and (max-width: 462px)
-        .container
-            width: 100% !important
-           
-            .f_comp
-                button
-                    width: 100% !important
-                    padding: 5px 0px !important
-                    margin: 5px !important
-                .form
-                    width: 100%
-                    
-                   
-
-    
-                
+             
 </style>
