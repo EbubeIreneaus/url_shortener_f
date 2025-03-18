@@ -1,13 +1,9 @@
-<script  setup>
-const b_end = ref('https://isls.vercel.app/')
+<script setup>
+// const b_end = ref('https://isls.vercel.app/')
+const b_end = ref('http://localhost:8000/')
 const f_end = ref('https://isls.netlify.app/')
 
 provide('url', {b_end, f_end})
-
-onMounted(() => {
-
-})
-
 </script>
 
 <template>
